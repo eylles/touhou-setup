@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# read the numbers from the exe filename
+thn=$(echo th*[!e].exe|cut -c 3-|head --bytes -5)
+# check if an additional patched exe exists
+if [ -f th*e.exe  ]; then
+	# set the name of the additional patched exe for the run script
+	thne=$(echo th*e.exe|cut -c 3-|head --bytes -5)
+else
+	# set the name of the only exe for the run script
+	thne=$thn
+fi
+
+# create run script
+touch touhou-"$thn"
+# write contents of run script
+echo "#!/bin/bash
+# go to executable directory" > touhou-"$thn"
+# write path of the exe to script
+pwd >> touhou-"$thn"
+# insert cd command at begining of executable path
+sed -i 's|^/.*|cd &|' touhou-"$thn"
+# write rest of run script
+echo "#run executable
+wine th$thne.exe" >> touhou-"$thn"
+# install run script
+install touhou-"$thn" "$HOME"/.local/bin/touhou-"$thn"
+# remove run script from current directory
+rm -f touhou-"$thn"
+
+# create .desktop launcher
+touch th"$thn".desktop
+# write contents of .desktop
+echo "#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=1.0
+Type=Application
+Terminal=false" > th"$thn".desktop
+# write path for icon
+pwd >> th"$thn".desktop 
+# insert icon declaration and icon name
+sed -i "s|^/.*|Icon=&/Icon_th$thn.png|" th"$thn".desktop
+# write rest of .desktop
+echo "Exec=$HOME/.local/bin/touhou-$thn
+Name=Touhou ~ $thn" >> th"$thn".desktop
+# instal .desktop launcher
+install th"$thn".desktop "$HOME"/.local/share/applications/th"$thn".desktop
+# remove .desktop from current directory 
+rm -f th"$thn".desktop
+
