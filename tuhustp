@@ -86,4 +86,6 @@ Name=Touhou ~ $thn" >> th"$thn".desktop
 	lnnmbr+=1
 	cd "$HOME" || exit
 done
+cd "$HOME" || exit
+rm pathsfound
 echo "finished"
