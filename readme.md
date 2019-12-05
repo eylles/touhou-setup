@@ -24,13 +24,14 @@ tuhustp
 ```
 The script will find all your official touhou pc games and will proceed to create launchers for them, the script will preffer english patched executables.
 The script can also create the .png icons for the games if you don't have them, just install icoutils and re-run the script
-
 icoutils is present in the official repos for most distros
-for ubuntu/debian and derivates: ```
+for ubuntu/debian and derivates: 
+```
 sudo apt isntall icoutils
 ```
 
-for arch and derivates: ```
+for arch and derivates: 
+```
 sudo pacman -S icoutils
 ```
 
