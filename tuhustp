@@ -1,24 +1,24 @@
 #!/bin/bash
 # search for executables from home directory
 echo "searching for touhou executables"
-find ~ -name 'th[0-9]*[0-9]\.exe' > pathsfound
+find "$HOME" -name 'th[0-9]*[0-9]\.exe' > pathsfound
 # number of games found saved to variable
-nmbrpths=$(find ~ -name 'th[0-9]*[0-9]\.exe' | wc -l)
+nmbrpths=$(find "$HOME" -name 'th[0-9]*[0-9]\.exe' | wc -l)
 # number of icons found saved to variable
-icnpths=$(find ~ -name 'Icon_th[0-9]*[0-9]\.png' | wc -l)
+icnpths=$(find "$HOME" -name 'Icon_th[0-9]*[0-9]\.png' | wc -l)
 if [ !  "$icnpths" = "$nmbrpths" ]; then
 	echo "some games lack icons"
-	declare -i icnlck=1
+	icnlck=1
 	# check if tool to create icons exists
 	if command -v extresso ; then
 		echo "missing icons will be created"
-		declare -i cancreate=1
+		cancreate=1
 	else
 		echo "missing icons can't be created please install icoutils and re-run"
-		declare -i cancreate=0
+		cancreate=0
 	fi
 else
-	declare -i icnlck=0
+	icnlck=0
 fi
 
 # start counter
@@ -32,7 +32,7 @@ do
 	# check if an additional patched exe exists
 	if [ -f th"$thn"e.exe  ]; then
 		# set the name of the additional patched exe for the run script
-		thne="$thn"e
+		thne="${thn}e"
 	else
 		# set the name of the only exe for the run script
 		thne=$thn
