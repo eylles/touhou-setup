@@ -13,6 +13,7 @@ chmod +x ./install.sh
 The install script will locate the tuhustp scripr in the $HOME/.local/bin/ directory and add it to PATH in .bashrc IF it ain't already added to PATH in your system, if you have a different dedicated scripts directory already added to PATH just go there in a terminal and run:
 ```
 wget https://raw.githubusercontent.com/eylles/touhou-setup/master/tuhustp
+chmod +x tuhustp
 ```
 
 ## How To Use
@@ -21,16 +22,21 @@ just open a terminal and run the script
 ```
 tuhustp
 ```
-the script will find all your official touhou pc games and will proceed to create launchers for them, the script will preffer english patched executables
-the script can also create the .png icons for the games if you don't have them, just install icoutils and re-run the script
+The script will find all your official touhou pc games and will proceed to create launchers for them, the script will preffer english patched executables.
+The script can also create the .png icons for the games if you don't have them, just install icoutils and re-run the script
 
 icoutils is present in the official repos for most distros
-for ubuntu/debian and derivates: ```$ sudo apt isntall icoutils```
-for arch and derivates: ```$ sudo pacman -S icoutils```
+for ubuntu/debian and derivates: ```
+sudo apt isntall icoutils
+```
+
+for arch and derivates: ```
+sudo pacman -S icoutils
+```
 
 ## Posible problems
 
-the script can fin a problem if some directory in you $HOME have the wrong persmissions and may output something like ```find: './.cache/dconf': Permission denied``` the most likely cause for that is that some GUI application with sudo modified a file and messed up some file ownerships, to fix it just run:
+The script can find a problem if some directory in your $HOME directory has the wrong persmissions and may output something like ```find: './.cache/dconf': Permission denied```, the most likely cause for it is that some GUI application with sudo modified a file and messed up some file ownerships, to fix it just run:
 ```
 sudo chown -R $USER ~
 ```
