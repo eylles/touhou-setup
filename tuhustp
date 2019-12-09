@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # search for executables from home directory
 echo "searching for touhou executables"
 find "$HOME" -name 'th[0-9]*[0-9]\.exe' > pathsfound
@@ -22,8 +22,8 @@ else
 fi
 
 # start counter
-declare -i lnnmbr=1 
-while [ $lnnmbr -le "$nmbrpths" ];
+lnnmbr=1 
+while [ $lnnmbr -lt "$nmbrpths" ];
 do
 	# cd to dir of nth game found
 	cd "$(sed 's/th[0-9]*[0-9].exe$//;'$lnnmbr'q;d' pathsfound)" || exit
@@ -52,7 +52,7 @@ do
 	# create run script
 	touch touhou-"$thn"
 	# write contents of run script
-	echo "#!/bin/bash
+	echo "#!/bin/sh
 # go to executable directory" > touhou-"$thn"
 	# write path of the exe to script
 	echo "cd $crrntdrpth/" >> touhou-"$thn"
@@ -83,7 +83,7 @@ Name=Touhou ~ $thn" >> th"$thn".desktop
 	install th"$thn".desktop "$HOME"/.local/share/applications/th"$thn".desktop
 	# remove .desktop from current directory 
 	rm -f th"$thn".desktop
-	lnnmbr+=1
+	lnnmbr=$((lnnmbr + 1))
 	cd "$HOME" || exit
 done
 cd "$HOME" || exit
