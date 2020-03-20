@@ -10,13 +10,8 @@ if [ !  "$icnpths" = "$nmbrpths" ]; then
 	echo "some games lack icons"
 	icnlck=1
 	# check if tool to create icons exists
-	if command -v extresso ; then
-		echo "missing icons will be created"
-		cancreate=1
-	else
-		echo "missing icons can't be created please install icoutils and re-run"
-		cancreate=0
-	fi
+	command -v extresso  > /dev/null && cancreate=1 || cancreate=0
+	[ 1 == $cancreate ] && echo "missing icons will be created" || echo "missing icons can't be created please install icoutils and re-run"
 else
 	icnlck=0
 fi
