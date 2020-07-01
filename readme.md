@@ -22,15 +22,17 @@ just open a terminal and run the script
 ```
 tuhustp
 ```
-The script will find all your official touhou pc games and will proceed to create launchers for them, the script will preffer english patched executables.
+be sure you are located in ~ if not just run ```cd ~```, make sure your trash directory doesn't contain any of the .exe nor the icons
+
+The script will find all your official touhou pc games and will proceed to create launchers for them, these launchers will be located in ```~/.local/share/applications``` so that your applications menu can find them and won't create launchers in the destop directory however it will create run scrips in ```~/.local/bin```, the script will preffer english patched executables and will look for the naming schemes like ```th09.exe``` and ```th09e.exe``` it will only look in the $HOME directory.
 The script can also create the .png icons for the games if you don't have them, just install icoutils and re-run the script
 icoutils is present in the official repos for most distros
-for ubuntu/debian and derivates: 
+for ubuntu/debian and derivates:
 ```
-sudo apt isntall icoutils
+sudo apt install icoutils
 ```
 
-for arch and derivates: 
+for arch and derivates:
 ```
 sudo pacman -S icoutils
 ```
