@@ -1,50 +1,86 @@
-#!/bin/bash
-
-# read the numbers from the exe filename
-thn=$(echo th*[!e].exe|cut -c 3-|head --bytes -5)
-# check if an additional patched exe exists
-if [ -f th*e.exe  ]; then
-	# set the name of the additional patched exe for the run script
-	thne=$(echo th*e.exe|cut -c 3-|head --bytes -5)
+#!/bin/sh
+# search for executables from home directory
+echo "searching for touhou executables"
+find "$HOME" -name 'th[0-9]*[0-9]\.exe' > pathsfound
+# number of games found saved to variable
+nmbrpths=$(find "$HOME" -name 'th[0-9]*[0-9]\.exe' | wc -l)
+# number of icons found saved to variable
+icnpths=$(find "$HOME" -name 'Icon_th[0-9]*[0-9]\.png' | wc -l)
+if [ !  "$icnpths" = "$nmbrpths" ]; then
+	echo "some games lack icons"
+	icnlck=1
+	# check if tool to create icons exists
+	command -v extresso  > /dev/null && cancreate=1 || cancreate=0
+	[ 1 = $cancreate ] && echo "missing icons will be created" || echo "missing icons can't be created please install icoutils and re-run"
 else
-	# set the name of the only exe for the run script
-	thne=$thn
+	icnlck=0
 fi
 
-# create run script
-touch touhou-"$thn"
-# write contents of run script
-echo "#!/bin/bash
+# start counter
+lnnmbr=1
+while [ $lnnmbr -le "$nmbrpths" ];
+do
+	# cd to dir of nth game found
+	cd "$(sed 's/th[0-9]*[0-9].exe$//;'$lnnmbr'q;d' pathsfound)" || exit
+	# read the numbers from the exe filename
+	thn=$(echo th*[!e].exe|cut -c 3-|head --bytes -5)
+	# check if an additional patched exe exists
+	if [ -f th"$thn"e.exe  ]; then
+		# set the name of the additional patched exe for the run script
+		thne="${thn}e"
+	else
+		# set the name of the only exe for the run script
+		thne=$thn
+	fi
+	# create missing icons if the tools are avaible
+	if [ ! -f Icon_th"$thn".png  ]; then
+		if [ $icnlck = 1 ] && [ $cancreate = 1 ]; then
+			echo "creating icon for th$thn"
+			wrestool -x -t 14 th"$thn".exe > out.ico
+			icotool -x -o . out.ico
+			mv out*.png Icon_th"$thn".png
+			rm out.ico
+		fi
+	fi
+	crrntdrpth="$(pwd)"
+	echo "creating runscript for th$thn"
+	# create run script
+	touch touhou-"$thn"
+	# write contents of run script
+	echo "#!/bin/sh
 # go to executable directory" > touhou-"$thn"
-# write path of the exe to script
-pwd >> touhou-"$thn"
-# insert cd command at begining of executable path
-sed -i 's|^/.*|cd &|' touhou-"$thn"
-# write rest of run script
-echo "#run executable
+	# write path of the exe to script
+	echo "cd $crrntdrpth/" >> touhou-"$thn"
+	# write rest of run script
+	echo "#run executable
 wine th$thne.exe" >> touhou-"$thn"
-# install run script
-install touhou-"$thn" "$HOME"/.local/bin/touhou-"$thn"
-# remove run script from current directory
-rm -f touhou-"$thn"
+	# install run script
+	install touhou-"$thn" "$HOME"/.local/bin/touhou-"$thn"
+	# remove run script from current directory
+	rm -f touhou-"$thn"
 
-# create .desktop launcher
-touch th"$thn".desktop
-# write contents of .desktop
-echo "#!/usr/bin/env xdg-open
+	echo "creating launcher for th$thn"
+	# create .desktop launcher
+	touch th"$thn".desktop
+	# write contents of .desktop
+	echo "#!/usr/bin/env xdg-open
 [Desktop Entry]
 Version=1.0
 Type=Application
 Terminal=false" > th"$thn".desktop
-# write path for icon
-pwd >> th"$thn".desktop 
-# insert icon declaration and icon name
-sed -i "s|^/.*|Icon=&/Icon_th$thn.png|" th"$thn".desktop
-# write rest of .desktop
-echo "Exec=$HOME/.local/bin/touhou-$thn
+	# insert icon declaration and icon name
+	echo "Icon=$crrntdrpth/Icon_th$thn.png" >> th"$thn".desktop
+	# write rest of .desktop
+	echo "Exec=$HOME/.local/bin/touhou-$thn
+Categories=Game;
 Name=Touhou ~ $thn" >> th"$thn".desktop
-# instal .desktop launcher
-install th"$thn".desktop "$HOME"/.local/share/applications/th"$thn".desktop
-# remove .desktop from current directory 
-rm -f th"$thn".desktop
-
+	# instal .desktop launcher
+	install th"$thn".desktop "$HOME"/.local/share/applications/th"$thn".desktop
+	# remove .desktop from current directory
+	rm -f th"$thn".desktop
+	lnnmbr=$((lnnmbr + 1))
+	cd "$HOME" || exit
+done
+cd "$HOME" || exit
+rm pathsfound
+echo "finished"
