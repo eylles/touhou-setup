@@ -11,13 +11,13 @@ if [ !  "$icnpths" = "$nmbrpths" ]; then
 	icnlck=1
 	# check if tool to create icons exists
 	command -v extresso  > /dev/null && cancreate=1 || cancreate=0
-	[ 1 == $cancreate ] && echo "missing icons will be created" || echo "missing icons can't be created please install icoutils and re-run"
+	[ 1 = $cancreate ] && echo "missing icons will be created" || echo "missing icons can't be created please install icoutils and re-run"
 else
 	icnlck=0
 fi
 
 # start counter
-lnnmbr=1 
+lnnmbr=1
 while [ $lnnmbr -lt "$nmbrpths" ];
 do
 	# cd to dir of nth game found
@@ -58,7 +58,7 @@ wine th$thne.exe" >> touhou-"$thn"
 	install touhou-"$thn" "$HOME"/.local/bin/touhou-"$thn"
 	# remove run script from current directory
 	rm -f touhou-"$thn"
-	
+
 	echo "creating launcher for th$thn"
 	# create .desktop launcher
 	touch th"$thn".desktop
@@ -76,7 +76,7 @@ Categories=Game;
 Name=Touhou ~ $thn" >> th"$thn".desktop
 	# instal .desktop launcher
 	install th"$thn".desktop "$HOME"/.local/share/applications/th"$thn".desktop
-	# remove .desktop from current directory 
+	# remove .desktop from current directory
 	rm -f th"$thn".desktop
 	lnnmbr=$((lnnmbr + 1))
 	cd "$HOME" || exit
