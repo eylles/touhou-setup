@@ -52,3 +52,6 @@ after that just re-run the script and everything will work as intended
 - manually creating a .desktop launcher is also a hassle if you have more than one game you play
 - with some games if the command to execute in the .desktop looks like this ``Exec= wine "/path/to/your/game/th.exe"`` the game will start without music
 - lazyness, who has the time and drive to do all this manually
+
+
+<img src="./posixshellmeme.png" width="500">
