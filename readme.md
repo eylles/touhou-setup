@@ -58,6 +58,6 @@ after that just re-run the script and everything will work as intended
 
 ## TODO
 
-[ ] improve filename search: as you can see the script will only recognize a handful of file names, and seems it doesn't like the filenames created by thcrap so ¯\\_(ツ)_/¯ .
+- [ ] improve filename search: as you can see the script will only recognize a handful of file names, and seems it doesn't like the filenames created by thcrap so ¯\\_(ツ)_/¯ .
 
-[ ] improve variable naming scheme: some people have told me the names of the variables are unintuitive at best...
+- [ ] improve variable naming scheme: some people have told me the names of the variables are unintuitive at best...
