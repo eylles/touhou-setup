@@ -53,5 +53,11 @@ after that just re-run the script and everything will work as intended
 - with some games if the command to execute in the .desktop looks like this ``Exec= wine "/path/to/your/game/th.exe"`` the game will start without music
 - lazyness, who has the time and drive to do all this manually
 
-
 <img src="./posixshellmeme.png" width="500">
+
+
+## TODO
+
+[ ] improve filename search: as you can see the script will only recognize a handful of file names, and seems it doesn't like the filenames created by thcrap so ¯\\_(ツ)_/¯ .
+
+[ ] improve variable naming scheme: some people have told me the names of the variables are unintuitive at best...
