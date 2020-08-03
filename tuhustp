@@ -1,86 +1,86 @@
 #!/bin/sh
 # search for executables from home directory
 echo "searching for touhou executables"
-find "$HOME" -name 'th[0-9]*[0-9]\.exe' > pathsfound
+find "$HOME" -name 'th[0-9]*[0-9]\.exe' > PathsFound
 # number of games found saved to variable
-nmbrpths=$(find "$HOME" -name 'th[0-9]*[0-9]\.exe' | wc -l)
+NumPaths=$(find "$HOME" -name 'th[0-9]*[0-9]\.exe' | wc -l)
 # number of icons found saved to variable
-icnpths=$(find "$HOME" -name 'Icon_th[0-9]*[0-9]\.png' | wc -l)
-if [ !  "$icnpths" = "$nmbrpths" ]; then
+IconPaths=$(find "$HOME" -name 'Icon_th[0-9]*[0-9]\.png' | wc -l)
+if [ !  "$IconPaths" = "$NumPaths" ]; then
 	echo "some games lack icons"
-	icnlck=1
+	LacksIcon=1
 	# check if tool to create icons exists
-	command -v extresso  > /dev/null && cancreate=1 || cancreate=0
-	[ 1 = $cancreate ] && echo "missing icons will be created" || echo "missing icons can't be created please install icoutils and re-run"
+	command -v extresso  > /dev/null && CanCreateIcon=1 || CanCreateIcon=0
+	[ 1 = $CanCreateIcon ] && echo "missing icons will be created" || echo "missing icons can't be created please install icoutils and re-run"
 else
-	icnlck=0
+	LacksIcon=0
 fi
 
 # start counter
-lnnmbr=1
-while [ $lnnmbr -le "$nmbrpths" ];
+NumLine=1
+while [ $NumLine -le "$NumPaths" ];
 do
 	# cd to dir of nth game found
-	cd "$(sed 's/th[0-9]*[0-9].exe$//;'$lnnmbr'q;d' pathsfound)" || exit
+	cd "$(sed 's/th[0-9]*[0-9].exe$//;'$NumLine'q;d' PathsFound)" || exit
 	# read the numbers from the exe filename
-	thn=$(echo th*[!e].exe|cut -c 3-|head --bytes -5)
+	TouhouNum=$(echo th*[!e].exe|cut -c 3-|head --bytes -5)
 	# check if an additional patched exe exists
-	if [ -f th"$thn"e.exe  ]; then
+	if [ -f th"$TouhouNum"e.exe  ]; then
 		# set the name of the additional patched exe for the run script
-		thne="${thn}e"
+		TouhouNumE="${TouhouNum}e"
 	else
 		# set the name of the only exe for the run script
-		thne=$thn
+		TouhouNumE=$TouhouNum
 	fi
 	# create missing icons if the tools are avaible
-	if [ ! -f Icon_th"$thn".png  ]; then
-		if [ $icnlck = 1 ] && [ $cancreate = 1 ]; then
-			echo "creating icon for th$thn"
-			wrestool -x -t 14 th"$thn".exe > out.ico
+	if [ ! -f Icon_th"$TouhouNum".png  ]; then
+		if [ $LacksIcon = 1 ] && [ $CanCreateIcon = 1 ]; then
+			echo "creating icon for th$TouhouNum"
+			wrestool -x -t 14 th"$TouhouNum".exe > out.ico
 			icotool -x -o . out.ico
-			mv out*.png Icon_th"$thn".png
+			mv out*.png Icon_th"$TouhouNum".png
 			rm out.ico
 		fi
 	fi
-	crrntdrpth="$(pwd)"
-	echo "creating runscript for th$thn"
+	CurrentDirPath="$(pwd)"
+	echo "creating runscript for th$TouhouNum"
 	# create run script
-	touch touhou-"$thn"
+	touch touhou-"$TouhouNum"
 	# write contents of run script
 	echo "#!/bin/sh
-# go to executable directory" > touhou-"$thn"
+# go to executable directory" > touhou-"$TouhouNum"
 	# write path of the exe to script
-	echo "cd $crrntdrpth/" >> touhou-"$thn"
+	echo "cd $CurrentDirPath/" >> touhou-"$TouhouNum"
 	# write rest of run script
 	echo "#run executable
-wine th$thne.exe" >> touhou-"$thn"
+wine th$TouhouNumE.exe" >> touhou-"$TouhouNum"
 	# install run script
-	install touhou-"$thn" "$HOME"/.local/bin/touhou-"$thn"
+	install touhou-"$TouhouNum" "$HOME"/.local/bin/touhou-"$TouhouNum"
 	# remove run script from current directory
-	rm -f touhou-"$thn"
+	rm -f touhou-"$TouhouNum"
 
-	echo "creating launcher for th$thn"
+	echo "creating launcher for th$TouhouNum"
 	# create .desktop launcher
-	touch th"$thn".desktop
+	touch th"$TouhouNum".desktop
 	# write contents of .desktop
 	echo "#!/usr/bin/env xdg-open
 [Desktop Entry]
 Version=1.0
 Type=Application
-Terminal=false" > th"$thn".desktop
+Terminal=false" > th"$TouhouNum".desktop
 	# insert icon declaration and icon name
-	echo "Icon=$crrntdrpth/Icon_th$thn.png" >> th"$thn".desktop
+	echo "Icon=$CurrentDirPath/Icon_th$TouhouNum.png" >> th"$TouhouNum".desktop
 	# write rest of .desktop
-	echo "Exec=$HOME/.local/bin/touhou-$thn
+	echo "Exec=$HOME/.local/bin/touhou-$TouhouNum
 Categories=Game;
-Name=Touhou ~ $thn" >> th"$thn".desktop
+Name=Touhou ~ $TouhouNum" >> th"$TouhouNum".desktop
 	# instal .desktop launcher
-	install th"$thn".desktop "$HOME"/.local/share/applications/th"$thn".desktop
+	install th"$TouhouNum".desktop "$HOME"/.local/share/applications/th"$TouhouNum".desktop
 	# remove .desktop from current directory
-	rm -f th"$thn".desktop
-	lnnmbr=$((lnnmbr + 1))
+	rm -f th"$TouhouNum".desktop
+	NumLine=$((NumLine + 1))
 	cd "$HOME" || exit
 done
 cd "$HOME" || exit
-rm pathsfound
+rm PathsFound
 echo "finished"
