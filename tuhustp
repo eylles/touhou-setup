@@ -1,4 +1,6 @@
 #!/bin/sh
+# fix echo
+echo () { printf %s\\n "$*" ; }
 # search for executables from home directory
 echo "searching for touhou executables"
 find "$HOME" -name 'th[0-9]*[0-9]\.exe' > PathsFound
