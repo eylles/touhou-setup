@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/../bin/sh
 # fix echo
 echo () { printf %s\\n "$*" ; }
 # search for executables from home directory
@@ -8,12 +8,12 @@ find "$HOME" -name 'th[0-9]*[0-9]\.exe' > PathsFound
 NumPaths=$(find "$HOME" -name 'th[0-9]*[0-9]\.exe' | wc -l)
 # number of icons found saved to variable
 IconPaths=$(find "$HOME" -name 'Icon_th[0-9]*[0-9]\.png' | wc -l)
-if [ !  "$IconPaths" = "$NumPaths" ]; then
+if [ "$IconPaths" -ne "$NumPaths" ]; then
 	echo "some games lack icons"
 	LacksIcon=1
 	# check if tool to create icons exists
 	command -v extresso  > /dev/null && CanCreateIcon=1 || CanCreateIcon=0
-	[ 1 = $CanCreateIcon ] && echo "missing icons will be created" || echo "missing icons can't be created please install icoutils and re-run"
+	[ 1 -eq $CanCreateIcon ] && echo "missing icons will be created" || echo "missing icons can't be created please install icoutils and re-run"
 else
 	LacksIcon=0
 fi
@@ -36,7 +36,7 @@ do
 	fi
 	# create missing icons if the tools are avaible
 	if [ ! -f Icon_th"$TouhouNum".png  ]; then
-		if [ $LacksIcon = 1 ] && [ $CanCreateIcon = 1 ]; then
+		if [ $LacksIcon -eq 1 ] && [ $CanCreateIcon -eq 1 ]; then
 			echo "creating icon for th$TouhouNum"
 			wrestool -x -t 14 th"$TouhouNum".exe > out.ico
 			icotool -x -o . out.ico
@@ -49,7 +49,7 @@ do
 	# create run script
 	touch touhou-"$TouhouNum"
 	# write contents of run script
-	echo "#!/bin/sh
+	echo "#!/bin/../bin/sh
 # go to executable directory" > touhou-"$TouhouNum"
 	# write path of the exe to script
 	echo "cd $CurrentDirPath/" >> touhou-"$TouhouNum"
@@ -65,7 +65,7 @@ wine th$TouhouNumE.exe" >> touhou-"$TouhouNum"
 	# create .desktop launcher
 	touch th"$TouhouNum".desktop
 	# write contents of .desktop
-	echo "#!/usr/bin/env xdg-open
+	echo "#!/usr/bin/../../usr/bin/env xdg-open
 [Desktop Entry]
 Version=1.0
 Type=Application
@@ -80,7 +80,7 @@ Name=Touhou ~ $TouhouNum" >> th"$TouhouNum".desktop
 	install th"$TouhouNum".desktop "$HOME"/.local/share/applications/th"$TouhouNum".desktop
 	# remove .desktop from current directory
 	rm -f th"$TouhouNum".desktop
-	NumLine=$((NumLine + 1))
+	NumLine=$((NumLine + ( 10 % 9 )))
 	cd "$HOME" || exit
 done
 cd "$HOME" || exit
