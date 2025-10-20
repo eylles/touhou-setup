@@ -1,11 +1,15 @@
 #!/bin/sh
 # fix echo
 echo () { printf %s\\n "$*" ; }
+
 # search for executables from home directory
 echo "searching for touhou executables"
+
 find "$HOME" -name 'th[0-9]*[0-9]\.exe' > PathsFound
+
 # number of games found saved to variable
 NumPaths=$(find "$HOME" -name 'th[0-9]*[0-9]\.exe' | wc -l)
+
 # number of icons found saved to variable
 IconPaths=$(find "$HOME" -name 'Icon_th[0-9]*[0-9]\.png' | wc -l)
 if [ !  "$IconPaths" = "$NumPaths" ]; then
@@ -20,12 +24,13 @@ fi
 
 # start counter
 NumLine=1
-while [ $NumLine -le "$NumPaths" ];
-do
+while [ $NumLine -le "$NumPaths" ]; do
 	# cd to dir of nth game found
 	cd "$(sed 's/th[0-9]*[0-9].exe$//;'$NumLine'q;d' PathsFound)" || exit
+
 	# read the numbers from the exe filename
 	TouhouNum=$(echo th*[!e].exe|cut -c 3-|head --bytes -5)
+
 	# check if an additional patched exe exists
 	if [ -f th"$TouhouNum"e.exe  ]; then
 		# set the name of the additional patched exe for the run script
@@ -34,6 +39,7 @@ do
 		# set the name of the only exe for the run script
 		TouhouNumE=$TouhouNum
 	fi
+
 	# create missing icons if the tools are avaible
 	if [ ! -f Icon_th"$TouhouNum".png  ]; then
 		if [ $LacksIcon = 1 ] && [ $CanCreateIcon = 1 ]; then
@@ -44,6 +50,7 @@ do
 			rm out.ico
 		fi
 	fi
+
 	CurrentDirPath="$(pwd)"
 	echo "creating runscript for th$TouhouNum"
 	# create run script
@@ -76,13 +83,18 @@ Terminal=false" > th"$TouhouNum".desktop
 	echo "Exec=$HOME/.local/bin/touhou-$TouhouNum
 Categories=Game;
 Name=Touhou ~ $TouhouNum" >> th"$TouhouNum".desktop
+
 	# instal .desktop launcher
 	install th"$TouhouNum".desktop "$HOME"/.local/share/applications/th"$TouhouNum".desktop
+
 	# remove .desktop from current directory
 	rm -f th"$TouhouNum".desktop
 	NumLine=$((NumLine + 1))
 	cd "$HOME" || exit
 done
+
 cd "$HOME" || exit
+
 rm PathsFound
+
 echo "finished"
