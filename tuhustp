@@ -29,6 +29,21 @@ wine th${ExeN}.exe
 __SCRIPT__
 }
 
+# usage: create_desktopfile path name
+create_desktopfile () {
+    Path="$1"
+    Name="$2"
+cat << __DESKTOP__
+[Desktop Entry]
+Type=Application
+Terminal=false
+Icon=$Path/Icon_th$Name.png
+Exec=$HOME/.local/bin/touhou-$Name
+Categories=Game;
+Name=Touhou ~ $Name
+__DESKTOP__
+}
+
 tmppath="/tmp/tuhustp"
 
 if mkdir -p "$tmppath" ; then
@@ -94,26 +109,8 @@ while [ $NumLine -le "$NumPaths" ]; do
     create_runscript "$CurrentDirPath" "$TouhouNum" "$TouhouNumE" > "$HOME"/.local/bin/touhou-"$TouhouNum"
 
 	echo "creating launcher for th$TouhouNum"
-	# create .desktop launcher
-	touch th"$TouhouNum".desktop
-	# write contents of .desktop
-	echo "#!/usr/bin/env xdg-open
-[Desktop Entry]
-Version=1.0
-Type=Application
-Terminal=false" > th"$TouhouNum".desktop
-	# insert icon declaration and icon name
-	echo "Icon=$CurrentDirPath/Icon_th$TouhouNum.png" >> th"$TouhouNum".desktop
-	# write rest of .desktop
-	echo "Exec=$HOME/.local/bin/touhou-$TouhouNum
-Categories=Game;
-Name=Touhou ~ $TouhouNum" >> th"$TouhouNum".desktop
+    create_desktopfile "$CurrentDirPath" "$TouhouNum" > "$HOME"/.local/share/applications/th"$TouhouNum".desktop
 
-	# instal .desktop launcher
-	install th"$TouhouNum".desktop "$HOME"/.local/share/applications/th"$TouhouNum".desktop
-
-	# remove .desktop from current directory
-	rm -f th"$TouhouNum".desktop
 	NumLine=$((NumLine + 1))
 	cd "$HOME" || exit
 done
