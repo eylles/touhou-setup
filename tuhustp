@@ -1,9 +1,15 @@
 #!/bin/sh
-# fix echo
-echo () { printf %s\\n "$*" ; }
 
 tmpdir=""
 PathsFile=""
+
+# fix echo
+echo () { printf %s\\n "$*" ; }
+
+find_executables () {
+    # throw errors to /dev/null we only want matches
+    find "$HOME" -name 'th[0-9]*[0-9]\.exe' 2>/dev/null
+}
 
 tmppath="/tmp/tuhustp"
 
@@ -18,11 +24,11 @@ PathsFile="${tmpdir}/PathsFound"
 # search for executables from home directory
 echo "searching for touhou executables"
 
-find "$HOME" -name 'th[0-9]*[0-9]\.exe' > "$PathsFile"
+find_executables > "$PathsFile"
 echo "list of found touhou executables written to '$PathsFile'"
 
 # number of games found saved to variable
-NumPaths=$(find "$HOME" -name 'th[0-9]*[0-9]\.exe' | wc -l)
+NumPaths=$(wc -l "$PathsFile" | cut -d' ' -f1 )
 
 # number of icons found saved to variable
 IconPaths=$(find "$HOME" -name 'Icon_th[0-9]*[0-9]\.png' | wc -l)
