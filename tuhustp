@@ -2,10 +2,24 @@
 # fix echo
 echo () { printf %s\\n "$*" ; }
 
+tmpdir=""
+PathsFile=""
+
+tmppath="/tmp/tuhustp"
+
+if mkdir -p "$tmppath" ; then
+    tmpdir="$tmppath"
+else
+    tmpdir="$HOME"
+fi
+
+PathsFile="${tmpdir}/PathsFound"
+
 # search for executables from home directory
 echo "searching for touhou executables"
 
-find "$HOME" -name 'th[0-9]*[0-9]\.exe' > PathsFound
+find "$HOME" -name 'th[0-9]*[0-9]\.exe' > "$PathsFile"
+echo "list of found touhou executables written to '$PathsFile'"
 
 # number of games found saved to variable
 NumPaths=$(find "$HOME" -name 'th[0-9]*[0-9]\.exe' | wc -l)
@@ -26,7 +40,7 @@ fi
 NumLine=1
 while [ $NumLine -le "$NumPaths" ]; do
 	# cd to dir of nth game found
-	cd "$(sed 's/th[0-9]*[0-9].exe$//;'$NumLine'q;d' PathsFound)" || exit
+	cd "$(sed 's/th[0-9]*[0-9].exe$//;'$NumLine'q;d' "$PathsFile")" || exit
 
 	# read the numbers from the exe filename
 	TouhouNum=$(echo th*[!e].exe|cut -c 3-|head --bytes -5)
@@ -95,6 +109,6 @@ done
 
 cd "$HOME" || exit
 
-rm PathsFound
+rm "$PathsFile"
 
 echo "finished"
