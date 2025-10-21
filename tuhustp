@@ -107,6 +107,7 @@ while [ $NumLine -le "$NumPaths" ]; do
 	CurrentDirPath="$(pwd)"
 	echo "creating runscript for th$TouhouNum"
     create_runscript "$CurrentDirPath" "$TouhouNum" "$TouhouNumE" > "$HOME"/.local/bin/touhou-"$TouhouNum"
+    chmod +x "$HOME"/.local/bin/touhou-"$TouhouNum"
 
 	echo "creating launcher for th$TouhouNum"
     create_desktopfile "$CurrentDirPath" "$TouhouNum" > "$HOME"/.local/share/applications/th"$TouhouNum".desktop
