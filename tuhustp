@@ -11,6 +11,24 @@ find_executables () {
     find "$HOME" -name 'th[0-9]*[0-9]\.exe' 2>/dev/null
 }
 
+# usage: create_runscript path name executable_name
+create_runscript () {
+    Path="$1"
+    Name="$2"
+    ExeN="$3"
+cat << __SCRIPT__
+#!/bin/sh
+
+# runscript for touhou ${Name}
+
+# go to executable directory
+cd "$Path" | exit
+
+# run executable
+wine th${ExeN}.exe
+__SCRIPT__
+}
+
 tmppath="/tmp/tuhustp"
 
 if mkdir -p "$tmppath" ; then
@@ -73,20 +91,7 @@ while [ $NumLine -le "$NumPaths" ]; do
 
 	CurrentDirPath="$(pwd)"
 	echo "creating runscript for th$TouhouNum"
-	# create run script
-	touch touhou-"$TouhouNum"
-	# write contents of run script
-	echo "#!/bin/sh
-# go to executable directory" > touhou-"$TouhouNum"
-	# write path of the exe to script
-	echo "cd $CurrentDirPath/" >> touhou-"$TouhouNum"
-	# write rest of run script
-	echo "#run executable
-wine th$TouhouNumE.exe" >> touhou-"$TouhouNum"
-	# install run script
-	install touhou-"$TouhouNum" "$HOME"/.local/bin/touhou-"$TouhouNum"
-	# remove run script from current directory
-	rm -f touhou-"$TouhouNum"
+    create_runscript "$CurrentDirPath" "$TouhouNum" "$TouhouNumE" > "$HOME"/.local/bin/touhou-"$TouhouNum"
 
 	echo "creating launcher for th$TouhouNum"
 	# create .desktop launcher
