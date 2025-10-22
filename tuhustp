@@ -22,7 +22,7 @@ cat << __SCRIPT__
 # runscript for touhou ${Name}
 
 # go to executable directory
-cd "$Path" | exit
+cd "$Path" || exit
 
 # run executable
 wine th${ExeN}.exe
