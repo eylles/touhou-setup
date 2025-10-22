@@ -59,6 +59,8 @@ echo "searching for touhou executables"
 
 find_executables > "$PathsFile"
 echo "list of found touhou executables written to '$PathsFile'"
+echo "the following paths were found:"
+cat "$PathsFile"
 
 # number of games found saved to variable
 NumPaths=$(wc -l "$PathsFile" | cut -d' ' -f1 )
@@ -105,10 +107,12 @@ while [ $NumLine -le "$NumPaths" ]; do
 	fi
 
 	CurrentDirPath="$(pwd)"
+    printf '\n'
 	echo "creating runscript for th$TouhouNum"
     create_runscript "$CurrentDirPath" "$TouhouNum" "$TouhouNumE" > "$HOME"/.local/bin/touhou-"$TouhouNum"
     chmod +x "$HOME"/.local/bin/touhou-"$TouhouNum"
 
+    printf '\n'
 	echo "creating launcher for th$TouhouNum"
     create_desktopfile "$CurrentDirPath" "$TouhouNum" > "$HOME"/.local/share/applications/th"$TouhouNum".desktop
 
