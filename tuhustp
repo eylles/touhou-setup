@@ -44,6 +44,31 @@ Name=Touhou ~ $Name
 __DESKTOP__
 }
 
+# usage: command | write_to_file "file"
+#     write the output of a command into given file
+#     the data to write is read from stdin
+write_to_file () {
+    file="$1"
+    filedir="${file%/*}"
+    value=$(cat)
+    can_w=""
+    if [ -e "$file" ] && [ -w "$file" ]; then
+        currcontent=$(cat "$file")
+        if [ "$currcontent" != "$value" ]; then
+            can_w=1
+        fi
+    elif [ -e "$filedir" ] && [ -w "$filedir" ]; then
+        can_w=1
+    else
+        echo "not writing to file '${file}', writeable contet is already the same"
+    fi
+    if [ -n "$can_w" ]; then
+        [ -n "$DBGOUT" ] && printf '%s\n' "$value"
+        [ -z "$DRYRUN" ] && printf '%s\n' "$value" > "$file"
+    fi
+
+}
+
 tmppath="/tmp/tuhustp"
 
 if mkdir -p "$tmppath" ; then
@@ -109,12 +134,16 @@ while [ $NumLine -le "$NumPaths" ]; do
 	CurrentDirPath="$(pwd)"
     printf '\n'
 	echo "creating runscript for th$TouhouNum"
-    create_runscript "$CurrentDirPath" "$TouhouNum" "$TouhouNumE" > "$HOME"/.local/bin/touhou-"$TouhouNum"
-    chmod +x "$HOME"/.local/bin/touhou-"$TouhouNum"
+    RunscriptFile="${HOME}/.local/bin/touhou-${TouhouNum}"
+    create_runscript "$CurrentDirPath" "$TouhouNum" "$TouhouNumE" | write_to_file "$RunscriptFile"
+    if [ -e "$RunscriptFile" ]; then
+        chmod +x "$RunscriptFile"
+    fi
 
     printf '\n'
 	echo "creating launcher for th$TouhouNum"
-    create_desktopfile "$CurrentDirPath" "$TouhouNum" > "$HOME"/.local/share/applications/th"$TouhouNum".desktop
+    DesktopFile="${HOME}/.local/share/applications/th${TouhouNum}.desktop"
+    create_desktopfile "$CurrentDirPath" "$TouhouNum" | write_to_file "$DesktopFile"
 
 	NumLine=$((NumLine + 1))
 	cd "$HOME" || exit
