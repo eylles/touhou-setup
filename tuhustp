@@ -2,6 +2,7 @@
 
 tmpdir=""
 PathsFile=""
+CanCreateIcon=""
 
 # fix echo
 echo () { printf %s\\n "$*" ; }
@@ -79,6 +80,9 @@ fi
 
 PathsFile="${tmpdir}/PathsFound"
 
+# check if tool to create icons exists
+command -v extresso  > /dev/null && CanCreateIcon=1 || CanCreateIcon=0
+
 # search for executables from home directory
 echo "searching for touhou executables"
 
@@ -89,18 +93,6 @@ cat "$PathsFile"
 
 # number of games found saved to variable
 NumPaths=$(wc -l "$PathsFile" | cut -d' ' -f1 )
-
-# number of icons found saved to variable
-IconPaths=$(find "$HOME" -name 'Icon_th[0-9]*[0-9]\.png' | wc -l)
-if [ !  "$IconPaths" = "$NumPaths" ]; then
-	echo "some games lack icons"
-	LacksIcon=1
-	# check if tool to create icons exists
-	command -v extresso  > /dev/null && CanCreateIcon=1 || CanCreateIcon=0
-	[ 1 = $CanCreateIcon ] && echo "missing icons will be created" || echo "missing icons can't be created please install icoutils and re-run"
-else
-	LacksIcon=0
-fi
 
 # start counter
 NumLine=1
@@ -122,12 +114,15 @@ while [ $NumLine -le "$NumPaths" ]; do
 
 	# create missing icons if the tools are avaible
 	if [ ! -f Icon_th"$TouhouNum".png  ]; then
-		if [ $LacksIcon = 1 ] && [ $CanCreateIcon = 1 ]; then
+        echo "there is no icon file for $TouhouNum"
+		if [ $CanCreateIcon = 1 ]; then
 			echo "creating icon for th$TouhouNum"
 			wrestool -x -t 14 th"$TouhouNum".exe > out.ico
 			icotool -x -o . out.ico
 			mv out*.png Icon_th"$TouhouNum".png
 			rm out.ico
+        else
+            echo "missing icons can't be created please install icoutils and re-run"
 		fi
 	fi
 
