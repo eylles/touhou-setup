@@ -72,19 +72,38 @@ write_to_file () {
 
 }
 
+show_usage () {
+    printf '%s\n' "Usage: ${myname} [-dnh]"
+}
+
+show_help () {
+    show_usage
+    printf '%s\n' "OPTIONS:"
+    printf '    %s' "-d, --debug"
+    printf '\t%s\n' "show debug output."
+    printf '    %s' "-n, --dry-run"
+    printf '\t%s\n' "do not write files."
+    printf '    %s' "-h, --help"
+    printf '\t%s\n' "show this help message."
+    exit 0
+}
+
 # arg handling
 if [ "$#" -gt 0 ]; then
-    while getopts "dn" o; do case "${o}" in
-        d) DBGOUT=1 ;;
-        n) DRYRUN=1 ;;
+    while getopts "dnh" o; do case "${o}" in
+        d)  DBGOUT=1 ;;
+        n)  DRYRUN=1 ;;
+        h) show_help ;;
         *) 
             echo "${myname}: unknown flag '${o}'"
-            exit
+            show_usage
+            exit 1
             ;;
     esac done
     case "$1" in
-        debug|-d|--debug)     DBGOUT=1  ;;
+        debug|-d|--debug)     DBGOUT=1 ;;
         dryrun|-n|--dry-run)  DRYRUN=1 ;;
+        help|-h|--help)      show_help ;;
     esac
     shift
 
