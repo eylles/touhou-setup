@@ -9,6 +9,11 @@ CanCreateIcon=""
 # fix echo
 echo () { printf %s\\n "$*" ; }
 
+die () {
+    [ -n "$1" ] && printf '%s\n' "$*" >&2;
+    exit 1
+}
+
 find_executables () {
     # throw errors to /dev/null we only want matches
     find "$HOME" -name 'th[0-9]*[0-9]\.exe' 2>/dev/null
@@ -137,7 +142,7 @@ NumPaths=$(wc -l "$PathsFile" | cut -d' ' -f1 )
 NumLine=1
 while [ $NumLine -le "$NumPaths" ]; do
 	# cd to dir of nth game found
-	cd "$(sed 's/th[0-9]*[0-9].exe$//;'$NumLine'q;d' "$PathsFile")" || exit
+	cd "$(sed 's/th[0-9]*[0-9].exe$//;'$NumLine'q;d' "$PathsFile")" || die "could not cd to dir"
 
 	# read the numbers from the exe filename
 	TouhouNum=$(echo th*[!e].exe|cut -c 3-|head --bytes -5)
@@ -180,11 +185,12 @@ while [ $NumLine -le "$NumPaths" ]; do
     create_desktopfile "$CurrentDirPath" "$TouhouNum" | write_to_file "$DesktopFile"
 
 	NumLine=$((NumLine + 1))
-	cd "$HOME" || exit
+	cd "$HOME" || die "could not cd to HOME"
 done
 
-cd "$HOME" || exit
+cd "$HOME" || die "could not cd to '$HOME'"
 
 rm "$PathsFile"
 
+printf '\n'
 echo "finished"
