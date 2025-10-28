@@ -32,6 +32,16 @@ for arch and derivates:
 sudo pacman -S icoutils
 ```
 
+## Runscripts
+
+The generated runscripts follow the naming convetion of `touhou-<num>` where `<num>` is replaced by the game's number, for example for touhou 10 mountain of faith the runscript would be named `touhou-10`
+
+Every runscript will check for a config file, the config dir for all runscripts is `$XDG_CONFIG_HOME/touhou` and every config has the name of the runscript with the `.rc` suffix, if the config does not exist the runscripts will simply create an empty one, the config file is sourced by the shell interpreter so it has all the capabilities of a sourced shell script, for example you can change the wine prefix to be used in the config file by simply adding a line like this:
+
+```sh
+export WINEPREFIX="${HOME}/.local/share/wineprefixes/touhou"
+```
+
 ## Posible problems
 
 The script can find a problem if some directory in your $HOME directory has the wrong persmissions and may output something like ``find: '~/.somedotdir/somefile': Permission denied``, the most likely cause for it is that some GUI application with sudo modified a file (usually a config) and messed up some file ownership, to fix it just run:
