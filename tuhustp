@@ -26,7 +26,6 @@ create_runscript () {
     ExeN="$3"
 cat << __SCRIPT__
 #!/bin/sh
-
 # runscript for touhou ${Name}
 
 # go to executable directory
@@ -172,16 +171,16 @@ while [ $NumLine -le "$NumPaths" ]; do
 
 	CurrentDirPath="$(pwd)"
     printf '\n'
-	echo "creating runscript for th$TouhouNum"
     RunscriptFile="${HOME}/.local/bin/touhou-${TouhouNum}"
+    printf '%s %5s: %s\n' "creating runscript for" "th$TouhouNum" "$RunscriptFile"
     create_runscript "$CurrentDirPath" "$TouhouNum" "$TouhouNumE" | write_to_file "$RunscriptFile"
     if [ -e "$RunscriptFile" ]; then
         chmod +x "$RunscriptFile"
     fi
 
     printf '\n'
-	echo "creating launcher for th$TouhouNum"
     DesktopFile="${HOME}/.local/share/applications/th${TouhouNum}.desktop"
+	printf '%s %5s: %s\n' "creating launcher  for" "th$TouhouNum" "$DesktopFile"
     create_desktopfile "$CurrentDirPath" "$TouhouNum" | write_to_file "$DesktopFile"
 
 	NumLine=$((NumLine + 1))
