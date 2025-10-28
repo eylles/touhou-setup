@@ -28,6 +28,13 @@ cat << __SCRIPT__
 #!/bin/sh
 # runscript for touhou ${Name}
 
+# load config
+configdir="\${XDG_CONFIG_HOME:-\$HOME/.config}/touhou/"
+config="\${configdir}/touhou-${Name}.rc"
+if [ -r "\${config}" ]; then
+    . "\${config}"
+fi
+
 # go to executable directory
 cd "$Path" || exit
 
