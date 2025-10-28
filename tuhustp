@@ -33,6 +33,11 @@ configdir="\${XDG_CONFIG_HOME:-\$HOME/.config}/touhou/"
 config="\${configdir}/touhou-${Name}.rc"
 if [ -r "\${config}" ]; then
     . "\${config}"
+else
+    if [ ! -d "\$configdir" ]; then
+        mkdir -p "\$configdir"
+    fi
+    echo "# touhou ${Name} runscript config" > "\$config"
 fi
 
 # go to executable directory
