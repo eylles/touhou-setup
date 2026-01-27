@@ -110,7 +110,8 @@ show_help () {
 }
 
 # arg handling
-if [ "$#" -gt 0 ]; then
+args=""
+while [ "$#" -gt 0 ]; do
     while getopts "dnh" o; do case "${o}" in
         d)  DBGOUT=1 ;;
         n)  DRYRUN=1 ;;
@@ -125,10 +126,12 @@ if [ "$#" -gt 0 ]; then
         debug|-d|--debug)     DBGOUT=1 ;;
         dryrun|-n|--dry-run)  DRYRUN=1 ;;
         help|-h|--help)      show_help ;;
+        *) args="$args $1" ;;
     esac
     shift
+done
 
-fi
+set -- $args
 
 
 if [ -d "$1" ]; then
