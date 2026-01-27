@@ -133,6 +133,8 @@ done
 
 set -- $args
 
+[ -n "$DBGOUT" ] && printf '%s\n' "$myname: debug mode on"
+[ -n "$DRYRUN" ] && printf '%s\n' "$myname: dry run mode on"
 
 if [ -d "$1" ]; then
     SearchDir="$1"
