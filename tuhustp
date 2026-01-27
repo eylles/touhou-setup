@@ -6,6 +6,8 @@ tmpdir=""
 PathsFile=""
 CanCreateIcon=""
 
+SearchDir=""
+
 # fix echo
 echo () { printf %s\\n "$*" ; }
 
@@ -16,7 +18,7 @@ die () {
 
 find_executables () {
     # throw errors to /dev/null we only want matches
-    find "$HOME" -name 'th[0-9]*[0-9]\.exe' 2>/dev/null
+    find "$SearchDir" -name 'th[0-9]*[0-9]\.exe' 2>/dev/null
 }
 
 # usage: create_runscript path name executable_name
@@ -89,17 +91,20 @@ write_to_file () {
 }
 
 show_usage () {
-    printf '%s\n' "Usage: ${myname} [-dnh]"
+    printf '%s\n' "Usage: ${myname} [-dnh] [SearchDir]"
 }
 
 show_help () {
     show_usage
+    printf '%s\n' "ARGUMENTS:"
+    printf '    %-15s' "SearchDir"
+    printf '\t%s\n' "directory to search in, if not provided then '\$HOME' is used."
     printf '%s\n' "OPTIONS:"
-    printf '    %s' "-d, --debug"
+    printf '    %-15s' "-d, --debug"
     printf '\t%s\n' "show debug output."
-    printf '    %s' "-n, --dry-run"
+    printf '    %-15s' "-n, --dry-run"
     printf '\t%s\n' "do not write files."
-    printf '    %s' "-h, --help"
+    printf '    %-15s' "-h, --help"
     printf '\t%s\n' "show this help message."
     exit 0
 }
@@ -125,6 +130,13 @@ if [ "$#" -gt 0 ]; then
 
 fi
 
+
+if [ -d "$1" ]; then
+    SearchDir="$1"
+else
+    SearchDir="$HOME"
+fi
+
 tmppath="/tmp/tuhustp"
 
 if mkdir -p "$tmppath" ; then
@@ -139,7 +151,7 @@ PathsFile="${tmpdir}/PathsFound"
 command -v extresso  > /dev/null && CanCreateIcon=1 || CanCreateIcon=0
 
 # search for executables from home directory
-echo "searching for touhou executables"
+echo "searching for touhou executables in: $SearchDir"
 
 find_executables > "$PathsFile"
 echo "list of found touhou executables written to '$PathsFile'"
