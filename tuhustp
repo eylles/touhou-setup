@@ -6,6 +6,8 @@ tmpdir=""
 PathsFile=""
 CanCreateIcon=""
 
+StartDir=$(pwd)
+
 SearchDir=""
 
 # fix echo
@@ -213,10 +215,10 @@ while [ $NumLine -le "$NumPaths" ]; do
     create_desktopfile "$CurrentDirPath" "$TouhouNum" | write_to_file "$DesktopFile"
 
 	NumLine=$((NumLine + 1))
-	cd "$HOME" || die "could not cd to HOME"
+	cd "$StartDir" || die "could not cd to '$StartDir'"
 done
 
-cd "$HOME" || die "could not cd to '$HOME'"
+cd "$StartDir" || die "could not cd to '$StartDir'"
 
 rm "$PathsFile"
 
